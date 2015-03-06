@@ -39,7 +39,10 @@ func loadFactory(context *cli.Context) (libcontainer.Factory, error) {
 			logrus.Warn("systemd cgroup flag passed, but systemd support for managing cgroups is not available.")
 		}
 	}
-	return libcontainer.New(context.GlobalString("root"), cgm)
+	return libcontainer.New(context.GlobalString("root"), cgm, func(l *libcontainer.LinuxFactory) error {
+		l.CriuPath = context.GlobalString("criu")
+		return nil
+	})
 }
 
 func getContainer(context *cli.Context) (libcontainer.Container, error) {
