@@ -1,6 +1,9 @@
 package main
 
-import "github.com/codegangsta/cli"
+import (
+	"github.com/codegangsta/cli"
+	"github.com/docker/libcontainer"
+)
 
 var checkpointCommand = cli.Command{
 	Name:  "checkpoint",
@@ -13,7 +16,7 @@ var checkpointCommand = cli.Command{
 		if err != nil {
 			fatal(err)
 		}
-		if err := container.Checkpoint(); err != nil {
+		if err := container.Checkpoint(&libcontainer.CriuOpts{}); err != nil {
 			fatal(err)
 		}
 	},

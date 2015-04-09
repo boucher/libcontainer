@@ -38,7 +38,7 @@ var restoreCommand = cli.Command{
 		if err := tty.attach(process); err != nil {
 			fatal(err)
 		}
-		err = container.Restore(process)
+		err = container.Restore(process, &libcontainer.CriuOpts{})
 		if err != nil {
 			fatal(err)
 		}
