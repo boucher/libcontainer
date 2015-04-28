@@ -101,9 +101,6 @@ type Config struct {
 	// so that these files prevent any writes.
 	ReadonlyPaths []string `json:"readonly_paths"`
 
-	// Container's standard descriptors (std{in,out,err}), needed for checkpoint and restore
-	StdFds [3]string `json:"ext_pipes,omitempty"`
-
 	// SystemProperties is a map of properties and their values. It is the equivalent of using
 	// sysctl -w my.property.name value in Linux.
 	SystemProperties map[string]string `json:"system_properties"`
