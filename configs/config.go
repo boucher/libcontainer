@@ -105,38 +105,3 @@ type Config struct {
 	// sysctl -w my.property.name value in Linux.
 	SystemProperties map[string]string `json:"system_properties"`
 }
-
-
-// Gets the root uid for the process on host which could be non-zero
-// when user namespaces are enabled.
-func (c Config) HostUID() (int, error) {
-	if c.Namespaces.Contains(NEWUSER) {
-		if c.UidMappings == nil {
-			return -1, fmt.Errorf("User namespaces enabled, but no user mappings found.")
-		}
-		id, found := c.hostIDFromMapping(0, c.UidMappings)
-		if !found {
-			return -1, fmt.Errorf("User namespaces enabled, but no root user mapping found.")
-		}
-		return id, nil
-	}
-	// Return default root uid 0
-	return 0, nil
-}
-
-// Gets the root uid for the process on host which could be non-zero
-// when user namespaces are enabled.
-func (c Config) HostGID() (int, error) {
-	if c.Namespaces.Contains(NEWUSER) {
-		if c.GidMappings == nil {
-			return -1, fmt.Errorf("User namespaces enabled, but no gid mappings found.")
-		}
-		id, found := c.hostIDFromMapping(0, c.GidMappings)
-		if !found {
-			return -1, fmt.Errorf("User namespaces enabled, but no root user mapping found.")
-		}
-		return id, nil
-	}
-	// Return default root uid 0
-	return 0, nil
-}

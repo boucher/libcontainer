@@ -388,11 +388,11 @@ func (c *linuxContainer) Checkpoint(criuOpts *CriuOpts) error {
 
 	err = c.criuSwrk(nil, &req, criuOpts)
 	if err != nil {
-		log.Errorf(filepath.Join(criuOpts.WorkDirectory, "dump.log"))
+		logrus.Errorf(filepath.Join(criuOpts.WorkDirectory, "dump.log"))
 		return err
 	}
 
-	log.Info("Checkpointed")
+	logrus.Info("Checkpointed")
 	return nil
 }
 
@@ -446,7 +446,7 @@ func (c *linuxContainer) Restore(process *Process, criuOpts *CriuOpts) error {
 
 	err = syscall.Mount(c.config.Rootfs, root, "", syscall.MS_BIND|syscall.MS_REC, "")
 	if err != nil {
-		log.Error(err)
+		logrus.Error(err)
 		return err
 	}
 	defer syscall.Unmount(root, syscall.MNT_DETACH)
@@ -519,11 +519,11 @@ func (c *linuxContainer) Restore(process *Process, criuOpts *CriuOpts) error {
 
 	err = c.criuSwrk(process, &req, criuOpts)
 	if err != nil {
-		log.Errorf(filepath.Join(criuOpts.WorkDirectory, "restore.log"))
+		logrus.Errorf(filepath.Join(criuOpts.WorkDirectory, "restore.log"))
 		return err
 	}
 
-	log.Info("Restored")
+	logrus.Info("Restored")
 	return nil
 }
 
@@ -534,7 +534,7 @@ func (c *linuxContainer) criuSwrk(process *Process, req *criurpc.CriuReq, opts *
 	}
 
 	stringOpts, _ := json.Marshal(*req.Opts)
-	log.Debugf("stringOpts: %s", stringOpts)
+	logrus.Debugf("stringOpts: %s", stringOpts)
 
 	criuClient := os.NewFile(uintptr(fds[0]), "criu-transport-client")
 	criuServer := os.NewFile(uintptr(fds[1]), "criu-transport-server")
@@ -561,7 +561,7 @@ func (c *linuxContainer) criuSwrk(process *Process, req *criurpc.CriuReq, opts *
 		if err != nil {
 			return
 		}
-		log.Warn(st.String())
+		logrus.Warn(st.String())
 	}()
 
 	var extFds []string
@@ -600,7 +600,7 @@ func (c *linuxContainer) criuSwrk(process *Process, req *criurpc.CriuReq, opts *
 			return err
 		}
 
-		log.Debug(resp.String())
+		logrus.Debug(resp.String())
 		if !resp.GetSuccess() {
 			return fmt.Errorf("criu failed: type %s errno %d", req.GetType().String(), resp.GetCrErrno())
 		}
